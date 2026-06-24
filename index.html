@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSFL GWP Calculator v6 — Flybox® Entopod</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--d:#1B3A4B;--m:#2E5F8A;--a:#3A7CA5;--l:#E8F0F6;--bg:#F4F6F8;--card:#FFF;--t:#1E293B;--mt:#64748B;--g:#0F6E56;--gbg:#ECFDF5;--am:#92400E;--abg:#FFFBEB;--r:#991B1B;--rbg:#FEF2F2;--b:#E2E8F0}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t);line-height:1.5}.page{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+.header{background:linear-gradient(135deg,#1B3A4B,#2E5F8A);border-radius:14px;padding:28px 32px;margin-bottom:20px;position:relative;overflow:hidden}.header::after{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.04)}.header h1{font-size:22px;font-weight:700;color:#fff;margin-bottom:6px}.header p{font-size:13px;color:#94B8D8;line-height:1.6;max-width:700px}.header .ver{position:absolute;top:16px;right:20px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
+.notice{background:var(--abg);border:1px solid #FCD34D;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:12px;color:var(--am);line-height:1.6}.notice strong{font-weight:600}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--b);border-radius:12px;padding:18px 20px;margin-bottom:14px}.card h3{font-size:12px;font-weight:600;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #F1F5F9}
+.row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}.row label{font-size:12px;color:var(--mt);min-width:180px;flex-shrink:0}.row input[type=range]{flex:1;min-width:80px;accent-color:var(--m);height:4px}.row input[type=number]{width:80px;padding:6px 8px;border:1px solid var(--b);border-radius:6px;font-family:'DM Mono',monospace;font-size:13px;color:var(--d);text-align:right}.row input[type=number]:focus{outline:2px solid var(--a);border-color:transparent}.rv{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;min-width:52px;text-align:right;color:var(--d)}.ru{font-size:11px;color:var(--mt);min-width:60px}
+select{width:100%;padding:10px 12px;border:1px solid var(--b);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--t);background:#F8FAFC;cursor:pointer;margin-bottom:10px}select.sm{width:auto;min-width:60px;padding:6px 10px;margin-bottom:0}
+.info{background:#F8FAFC;border-left:3px solid var(--a);border-radius:0 8px 8px 0;padding:10px 14px;font-size:11px;color:var(--mt);line-height:1.6;margin-top:8px}
+.toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}.toggle-row span{font-size:11px;color:var(--mt)}.toggle-row span.active{color:var(--d);font-weight:600}.toggle{position:relative;width:36px;height:20px;cursor:pointer}.toggle input{opacity:0;width:0;height:0}.toggle .slider{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--b);border-radius:10px;transition:.2s}.toggle .slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.2s}.toggle input:checked+.slider{background:var(--a)}.toggle input:checked+.slider::before{transform:translateX(16px)}
+.stat-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.stat-box{flex:1;min-width:90px;background:var(--l);border-radius:8px;padding:8px 10px;text-align:center}.stat-box .sv{font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--d)}.stat-box .sl{font-size:9px;color:var(--mt);text-transform:uppercase;letter-spacing:.3px;margin-top:2px}
+.result-hero{background:linear-gradient(135deg,#1B3A4B,#2E5F8A);border-radius:14px;padding:24px 28px;margin-bottom:14px;color:#fff}.result-hero .big{font-family:'DM Mono',monospace;font-size:40px;font-weight:700;margin:4px 0}.result-hero .sub{font-size:12px;color:#94B8D8}
+.result-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}.result-card{flex:1;min-width:100px;background:var(--card);border:1px solid var(--b);border-radius:10px;padding:14px 16px;text-align:center}.result-card .num{font-family:'DM Mono',monospace;font-size:18px;font-weight:600;color:var(--d)}.result-card .lbl{font-size:9px;color:var(--mt);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600}.b-good{background:var(--gbg);color:var(--g)}.b-warn{background:var(--abg);color:var(--am)}.b-bad{background:var(--rbg);color:var(--r)}.b-neu{background:var(--l);color:var(--m)}
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:12px}.comp-card{background:#F8FAFC;border-radius:8px;padding:10px;text-align:center;border:1px solid transparent;transition:border-color .2s}.comp-card.cur{border-color:var(--a);background:var(--l)}.comp-card .cs{font-size:10px;color:var(--mt)}.comp-card .cn{font-family:'DM Mono',monospace;font-size:15px;font-weight:600;margin:2px 0}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}.bar-lbl{font-size:10px;color:var(--mt);min-width:100px;text-align:right}.bar-track{flex:1;height:18px;background:#F1F5F9;border-radius:4px;overflow:hidden}.bar-fill{height:100%;border-radius:4px;transition:width .4s ease;min-width:2px}.bar-val{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;min-width:55px}
+.stack-wrap{margin-top:12px}.stack-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin-bottom:6px}.stack-seg{display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;min-width:2px}.stack-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}.stack-legend span{font-size:10px;color:var(--mt);display:flex;align-items:center;gap:4px}.stack-legend .dot{width:8px;height:8px;border-radius:2px;display:inline-block}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="header">
+  <span class="ver" id="ver"></span>
+  <h1>BSFL GWP Scenario Calculator</h1>
+  <p>Model the environmental impact of live BSFL production across feedstock, production volume, electricity, and transport scenarios. Toggle between per-kg-larvae and per-tonne-of-waste functional units.</p>
+</div>
+
+<div class="notice">
+  <strong>Data source:</strong> Feedflow LCA (SimaPro 10, ReCiPe Midpoint H, IPCC 2021). Updated May 2026. Waste diversion EFs from DEFRA 2022 / WRAP Carbon WARM v2. Grow electricity scales with substrate-specific cycle length.
+</div>
+
+<div class="grid">
+<!-- LEFT -->
+<div>
+
+<div class="card">
+  <h3>Functional Unit</h3>
+  <div class="toggle-row">
+    <span id="fu-lbl-kg" class="active">Per kg live larvae</span>
+    <label class="toggle"><input type="checkbox" id="fu-toggle" onchange="calc()"><span class="slider"></span></label>
+    <span id="fu-lbl-t">Per tonne of waste</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Feedstock</h3>
+  <select id="sub" onchange="setSub();calc();">
+    <option value="mash">Chick mash & wheat bran (primary system)</option>
+    <option value="foodwaste">Household food waste (AD baseline)</option>
+    <option value="fv">Fruit & veg waste (composting baseline)</option>
+    <option value="bsg">Brewers' spent grain (AD baseline)</option>
+    <option value="manure">Poultry manure (land-spreading baseline)</option>
+  </select>
+  <div class="row">
+    <label>Bioconversion rate</label>
+    <input type="range" id="bcr-sl" min="1" max="50" step="0.1" oninput="calc()">
+    <span class="rv" id="bcr-val">22.5</span>
+    <span class="ru">%</span>
+  </div>
+  <div class="info" id="sub-info"></div>
+</div>
+
+<div class="card">
+  <h3>Production Volume</h3>
+  <div class="row">
+    <label>Eggs per cage per day</label>
+    <input type="range" id="eggs-sl" min="5" max="30" step="0.5" value="16.5" oninput="calc()">
+    <span class="rv" id="eggs-val">16.5</span>
+    <span class="ru">g/cage/day</span>
+  </div>
+  <div class="row">
+    <label>Number of grow pods</label>
+    <select id="pods-sel" class="sm" onchange="calc()">
+      <option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="10">10</option>
+    </select>
+    <span class="ru">× 900 trays each</span>
+  </div>
+  <div class="stat-row">
+    <div class="stat-box"><div class="sv" id="s-output">—</div><div class="sl">kg larvae/day</div></div>
+    <div class="stat-box"><div class="sv" id="s-kwh">—</div><div class="sl">kWh/kg</div></div>
+    <div class="stat-box"><div class="sv" id="s-cycle">—</div><div class="sl">grow cycle (days)</div></div>
+  </div>
+  <div class="info">Breed+hatch: 101.8 kWh/day fixed. Grow: 16.5 kWh/day/pod. Grow electricity scales with cycle length per substrate.</div>
+</div>
+
+<div class="card">
+  <h3>Electricity</h3>
+  <div class="row">
+    <label>Grid carbon intensity</label>
+    <input type="range" id="grid-sl" min="0" max="500" step="1" value="233" oninput="calc()">
+    <span class="rv" id="grid-val">233</span>
+    <span class="ru">g CO₂/kWh</span>
+  </div>
+  <div class="info">UK grid 2023: 233 g/kWh. 100% renewable ≈ 0–20 g/kWh.</div>
+</div>
+
+<div class="card">
+  <h3>Transport</h3>
+  <div class="row">
+    <label>Feed transport distance</label>
+    <input type="range" id="trans-sl" min="0" max="300" step="5" value="10" oninput="calc()">
+    <span class="rv" id="trans-val">10</span>
+    <span class="ru">km</span>
+  </div>
+  <div class="row">
+    <label>Larvae delivery distance</label>
+    <input type="range" id="ltrans-sl" min="0" max="300" step="5" value="0" oninput="calc()">
+    <span class="rv" id="ltrans-val">0</span>
+    <span class="ru">km</span>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Frass</h3>
+  <div class="row">
+    <label>Frass yield</label>
+    <input type="range" id="frass-sl" min="0" max="3" step="0.01" value="1.11" oninput="calc()">
+    <span class="rv" id="frass-val">1.11</span>
+    <span class="ru">kg/kg larvae</span>
+  </div>
+</div>
+
+</div>
+<!-- RIGHT -->
+<div>
+
+<div class="result-hero">
+  <div class="sub" id="r-fu-label">Net GWP (kg CO₂-eq per kg live larvae)</div>
+  <div class="big" id="r-net">—</div>
+  <div class="sub" id="r-secondary"></div>
+  <div style="margin-top:8px" id="r-badge"></div>
+</div>
+
+<div class="result-row" id="result-cards"></div>
+
+<div class="card">
+  <h3>GWP Breakdown</h3>
+  <div class="stack-wrap">
+    <div class="stack-bar" id="stack-bar"></div>
+    <div class="stack-legend" id="stack-legend"></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>All Scenarios at Current Settings</h3>
+  <div class="comp-grid" id="comp-grid"></div>
+</div>
+
+<div class="card">
+  <h3>Comparison with Conventional Protein</h3>
+  <div id="conv-bars"></div>
+  <div class="info" style="margin-top:8px">Soybean meal: ~0.72 kg CO₂-eq/kg. Fishmeal: ~1.4 kg CO₂-eq/kg. Both per kg product, not per kg protein.</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+const VERSION = "v6.0 — May 2026";
+
+// ═══════════════════════════════════════════════════════
+// DATA BLOCK
+// ═══════════════════════════════════════════════════════
+
+const BREED_CAGES = 9;
+const BREED_ELEC_DAY = 50.9;
+const HATCH_ELEC_DAY = 50.9;
+const GROW_ELEC_DAY = 16.5;
+const OUTPUT_PER_POD = 202.5;
+const GROW_ELEC_BASE = GROW_ELEC_DAY / OUTPUT_PER_POD; // 0.0815 kWh/kg at 10-day cycle
+const BH_ELEC_FULL = (BREED_ELEC_DAY + HATCH_ELEC_DAY) / OUTPUT_PER_POD; // 0.5015 per pod... 
+// Actually: BH overhead per kg larvae = BH_daily / (output_per_pod * num_pods) but since output scales with pods:
+// BH per kg = (BREED+HATCH daily) / (output_per_pod) / num_pods... no.
+// BH daily is fixed at 101.8. Total output = pods * 202.5. So BH per kg = 101.8 / (pods * 202.5)
+const BH_DAILY = BREED_ELEC_DAY + HATCH_ELEC_DAY; // 101.8
+
+const EGG_MASS_PER_FU = 0.000319;
+const DOL5_MASS_PER_FU = 0.0533;
+const HATCH_FEED_GWP = 0.050; // kg CO2-eq per kg larvae from hatch feed
+const FRASS_CREDIT_PER_KG = 0.014;
+const TRANS_EF = 0.00062; // kg CO2-eq per kg.km
+
+const DEF_GRID = 233;
+const DEF_FRASS = 1.11;
+const BASE_CYCLE = 10; // chick mash cycle days
+
+// SimaPro confirmed results (updated post-electricity fix)
+const SUBS = {
+  mash:      { label:"Chick mash / bran",   bcrDef:22.5, cycleDays:10, protPct:14.6, netGWP:1.68,  rearing:0.066, info:"Primary system. BCR 22.5%. 10-day grow cycle. Measured Flybox data." },
+  foodwaste: { label:"Household food waste", bcrDef:16.4, cycleDays:15, protPct:21.2, netGWP:0.263, rearing:0.001, info:"AD baseline. BCR 16.4%. 15-day cycle. SimaPro confirmed 0.263." },
+  fv:        { label:"Fruit & veg waste",    bcrDef:6.0,  cycleDays:22, protPct:12.9, netGWP:-0.541,rearing:0.000, info:"Composting baseline. BCR 6%. 22-day cycle. SimaPro confirmed -0.541." },
+  bsg:       { label:"Brewers' spent grain", bcrDef:10.0, cycleDays:16, protPct:13.6, netGWP:0.262, rearing:0.045, info:"AD baseline (surplus). BCR 10%. 16-day cycle. SimaPro confirmed 0.262." },
+  manure:    { label:"Poultry manure",       bcrDef:6.0,  cycleDays:24, protPct:12.0, netGWP:-0.057,rearing:0.005, info:"Land-spreading baseline. BCR 6%. 24-day cycle. Prohibited under EU/UK law." }
+};
+
+const CONV = {
+  soy:  { label:"Soybean meal", gwp:0.72 },
+  fish: { label:"Fishmeal",     gwp:1.40 }
+};
+
+// Back-calculate feedstock-net component from confirmed SimaPro results
+// At defaults: net = feedstock_net + elec_gwp + hatch_feed + rearing + feed_transport - frass_credit
+// Default electricity: grow(0.0815 * cycleDays/10) + BH(101.8/202.5) per kg, times grid
+Object.values(SUBS).forEach(s => {
+  const growElec = GROW_ELEC_BASE * (s.cycleDays / BASE_CYCLE);
+  const bhElec = BH_DAILY / OUTPUT_PER_POD; // 1 pod default
+  const totalElec = growElec + bhElec;
+  const elecGWP = totalElec * DEF_GRID / 1000;
+  const fcr = 100 / s.bcrDef;
+  const feedTransGWP = fcr * 10 * TRANS_EF; // 10km default
+  const frassCredit = DEF_FRASS * FRASS_CREDIT_PER_KG;
+  // feedstock_net = net - elec - hatch_feed - rearing - feedTrans + frass
+  s.feedstockNet = s.netGWP - elecGWP - HATCH_FEED_GWP - s.rearing - feedTransGWP + frassCredit;
+  s.feedstockPerFCR = s.feedstockNet / fcr;
+});
+
+// ═══════════════════════════════════════════════════════
+// ELECTRICITY MODEL
+// ═══════════════════════════════════════════════════════
+function calcElec(cycleDays, numPods) {
+  const growElec = GROW_ELEC_BASE * (cycleDays / BASE_CYCLE);
+  const bhElec = BH_DAILY / (OUTPUT_PER_POD * numPods);
+  return { grow: growElec, bh: bhElec, total: growElec + bhElec };
+}
+
+// ═══════════════════════════════════════════════════════
+// CALCULATOR
+// ═══════════════════════════════════════════════════════
+function setSub() {
+  const k = document.getElementById('sub').value;
+  const s = SUBS[k];
+  document.getElementById('bcr-sl').value = s.bcrDef;
+  document.getElementById('bcr-val').textContent = s.bcrDef.toFixed(1);
+  document.getElementById('sub-info').textContent = s.info;
+}
+
+function calcScenario(key, bcr, cycleDays, numPods, grid, feedTrans, larvTrans, frass) {
+  const s = SUBS[key];
+  const fcr = 100 / bcr;
+  const em = calcElec(cycleDays, numPods);
+  const elecGWP = em.total * grid / 1000;
+  const feedstockNet = s.feedstockPerFCR * fcr;
+  const feedTransGWP = fcr * feedTrans * TRANS_EF;
+  const larvTransGWP = larvTrans * TRANS_EF;
+  const frassCredit = frass * FRASS_CREDIT_PER_KG;
+  const net = feedstockNet + elecGWP + HATCH_FEED_GWP + s.rearing + feedTransGWP + larvTransGWP - frassCredit;
+  
+  return {
+    net, feedstock: feedstockNet, elecGWP, hatchFeed: HATCH_FEED_GWP, rearing: s.rearing,
+    feedTrans: feedTransGWP, larvTrans: larvTransGWP, frass: frassCredit,
+    elecModel: em, cycleDays, fcr,
+    larvaePerTonne: bcr * 10, // kg larvae per tonne waste
+  };
+}
+
+function calc() {
+  const key = document.getElementById('sub').value;
+  const s = SUBS[key];
+  const bcr = parseFloat(document.getElementById('bcr-sl').value);
+  const numPods = parseInt(document.getElementById('pods-sel').value);
+  const grid = parseFloat(document.getElementById('grid-sl').value);
+  const feedTrans = parseFloat(document.getElementById('trans-sl').value);
+  const larvTrans = parseFloat(document.getElementById('ltrans-sl').value);
+  const frass = parseFloat(document.getElementById('frass-sl').value);
+  const perTonne = document.getElementById('fu-toggle').checked;
+
+  // Update labels
+  document.getElementById('bcr-val').textContent = bcr.toFixed(1);
+  document.getElementById('eggs-val').textContent = parseFloat(document.getElementById('eggs-sl').value).toFixed(1);
+  document.getElementById('grid-val').textContent = grid.toFixed(0);
+  document.getElementById('trans-val').textContent = feedTrans.toFixed(0);
+  document.getElementById('ltrans-val').textContent = larvTrans.toFixed(0);
+  document.getElementById('frass-val').textContent = frass.toFixed(2);
+
+  const fuL = document.getElementById('fu-lbl-kg');
+  const fuT = document.getElementById('fu-lbl-t');
+  fuL.classList.toggle('active', !perTonne);
+  fuT.classList.toggle('active', perTonne);
+
+  const r = calcScenario(key, bcr, s.cycleDays, numPods, grid, feedTrans, larvTrans, frass);
+  const mult = perTonne ? r.larvaePerTonne : 1;
+  const unit = perTonne ? "kg CO₂-eq / tonne waste" : "kg CO₂-eq / kg larvae";
+  const unitShort = perTonne ? "kg/t waste" : "kg/kg";
+
+  // Stats
+  document.getElementById('s-output').textContent = (OUTPUT_PER_POD * numPods).toFixed(0);
+  document.getElementById('s-kwh').textContent = r.elecModel.total.toFixed(3);
+  document.getElementById('s-cycle').textContent = s.cycleDays;
+
+  // Hero
+  document.getElementById('r-fu-label').textContent = perTonne ? "Net GWP (kg CO₂-eq per tonne of waste processed)" : "Net GWP (kg CO₂-eq per kg live larvae)";
+  const netDisplay = r.net * mult;
+  document.getElementById('r-net').textContent = perTonne ? netDisplay.toFixed(1) : netDisplay.toFixed(2);
+
+  // Secondary line
+  if (perTonne) {
+    document.getElementById('r-secondary').textContent = 
+      r.larvaePerTonne.toFixed(0) + " kg larvae per tonne | " + (r.net).toFixed(3) + " kg CO₂-eq per kg larvae";
+  } else {
+    const gwpProt = r.net / (s.protPct / 100);
+    document.getElementById('r-secondary').textContent = gwpProt.toFixed(1) + " kg CO₂-eq/kg protein (" + s.protPct + "% CP)";
+  }
+
+  // Badge
+  const PRIMARY = SUBS.mash.netGWP;
+  const rb = document.getElementById('r-badge');
+  if (r.net < 0) {
+    rb.innerHTML = '<span class="badge b-good">Net negative — carbon benefit</span>';
+  } else if (r.net < PRIMARY - 0.05) {
+    rb.innerHTML = '<span class="badge b-good">' + ((1 - r.net / PRIMARY) * 100).toFixed(0) + '% lower than primary baseline (1.68)</span>';
+  } else if (r.net > PRIMARY + 0.05) {
+    rb.innerHTML = '<span class="badge b-bad">+' + ((r.net / PRIMARY - 1) * 100).toFixed(0) + '% higher than primary baseline</span>';
+  } else {
+    rb.innerHTML = '<span class="badge b-neu">Comparable to primary baseline</span>';
+  }
+
+  // Result cards
+  const rc = document.getElementById('result-cards');
+  const cards = [
+    { num: (r.feedstock * mult).toFixed(perTonne ? 1 : 3), lbl: "Feedstock (net)" },
+    { num: (r.elecGWP * mult).toFixed(perTonne ? 1 : 3), lbl: "Electricity" },
+    { num: (r.hatchFeed * mult).toFixed(perTonne ? 1 : 3), lbl: "Hatch feed" },
+    { num: (r.rearing * mult).toFixed(perTonne ? 1 : 3), lbl: "Rearing emissions" },
+    { num: "-" + (r.frass * mult).toFixed(perTonne ? 1 : 3), lbl: "Frass credit" },
+  ];
+  rc.innerHTML = cards.map(c => '<div class="result-card"><div class="num">' + c.num + '</div><div class="lbl">' + c.lbl + '</div></div>').join('');
+
+  // Stacked bar
+  const pos = [
+    { label:"Feedstock", val:Math.max(r.feedstock,0)*mult, color:"#1B3A4B" },
+    { label:"Electricity", val:r.elecGWP*mult, color:"#2E5F8A" },
+    { label:"Hatch feed", val:r.hatchFeed*mult, color:"#3A7CA5" },
+    { label:"Rearing", val:r.rearing*mult, color:"#64B5D6" },
+    { label:"Feed transport", val:r.feedTrans*mult, color:"#94D2E8" },
+    { label:"Larvae transport", val:r.larvTrans*mult, color:"#B8E6F0" },
+  ];
+  const neg = [
+    { label:"Avoided burden", val:Math.abs(Math.min(r.feedstock,0))*mult, color:"#0F6E56" },
+    { label:"Frass credit", val:r.frass*mult, color:"#34D399" },
+  ];
+  const tot = Math.max(pos.reduce((a,c)=>a+c.val,0), neg.reduce((a,c)=>a+c.val,0), 0.01);
+
+  const sb = document.getElementById('stack-bar');
+  sb.innerHTML = '';
+  pos.forEach(c => {
+    if (c.val < 0.001) return;
+    const pct = (c.val/tot*100).toFixed(1);
+    const seg = document.createElement('div');
+    seg.className='stack-seg'; seg.style.width=pct+'%'; seg.style.background=c.color;
+    if (parseFloat(pct)>8) seg.textContent = (c.val).toFixed(perTonne?0:2);
+    sb.appendChild(seg);
+  });
+
+  const sl = document.getElementById('stack-legend');
+  sl.innerHTML = '';
+  [...pos,...neg].forEach(c => {
+    if (c.val < 0.001) return;
+    const sp = document.createElement('span');
+    sp.innerHTML = '<span class="dot" style="background:'+c.color+'"></span>'+c.label+': '+(c.val).toFixed(perTonne?1:3);
+    sl.appendChild(sp);
+  });
+
+  // Comparison grid
+  const cg = document.getElementById('comp-grid');
+  cg.innerHTML = '';
+  Object.entries(SUBS).forEach(([k,sv]) => {
+    const res = calcScenario(k, sv.bcrDef, sv.cycleDays, numPods, grid, feedTrans, larvTrans, frass);
+    const v = perTonne ? res.net * res.larvaePerTonne : res.net;
+    const d = document.createElement('div');
+    d.className = 'comp-card'+(k===key?' cur':'');
+    const col = res.net<0?'#0F6E56':res.net<0.5?'#0F6E56':res.net<1.5?'#2E5F8A':'#92400E';
+    d.innerHTML = '<div class="cs">'+sv.label+'</div><div class="cn" style="color:'+col+'">'+v.toFixed(perTonne?1:2)+'</div><div class="cs">'+unitShort+'</div>';
+    cg.appendChild(d);
+  });
+
+  // Conventional comparison (only makes sense per kg)
+  const cb = document.getElementById('conv-bars');
+  if (perTonne) {
+    cb.innerHTML = '<div style="font-size:11px;color:#64748B;padding:8px">Switch to per-kg-larvae view for protein comparison</div>';
+  } else {
+    cb.innerHTML = '';
+    const items = [
+      { label:s.label+" (current)", gwp:r.net, cur:true },
+      { label:"Soybean meal", gwp:CONV.soy.gwp, cur:false },
+      { label:"Fishmeal", gwp:CONV.fish.gwp, cur:false },
+    ];
+    const mx = Math.max(...items.map(x=>Math.abs(x.gwp)),0.1)*1.15;
+    items.forEach(item => {
+      const row = document.createElement('div'); row.className='bar-row';
+      const pct = Math.min(Math.abs(item.gwp)/mx*100,100).toFixed(1);
+      const col = item.cur?(item.gwp<0?'#0F6E56':'#2E5F8A'):'#64748B';
+      const fw = item.cur?'600':'400';
+      row.innerHTML = '<span class="bar-lbl" style="font-weight:'+fw+'">'+item.label+'</span><div class="bar-track"><div class="bar-fill" style="background:'+col+';width:'+pct+'%"></div></div><span class="bar-val" style="color:'+col+'">'+item.gwp.toFixed(2)+'</span>';
+      cb.appendChild(row);
+    });
+  }
+}
+
+document.getElementById('ver').textContent = VERSION;
+setSub();
+calc();
+</script>
+</body>
+</html>
